@@ -6,7 +6,7 @@ Touying Slide Theme for Federal University of Acre
 
 ## Example
 
-See the [examples](./example/example.typ) and [output](./example/example.pdf) for more details.
+See the [example](./example/example.typ) and [output](./example/example.pdf) for more details.
 
 ## License
 

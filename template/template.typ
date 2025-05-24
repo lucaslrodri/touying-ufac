@@ -1,5 +1,5 @@
 #import "@preview/touying:0.6.1": *
-#import "../src/lib.typ": *
+#import "@local/touying-ufac:0.0.1": *
 
 #show: ufac-theme.with(
   aspect-ratio: "16-9",
