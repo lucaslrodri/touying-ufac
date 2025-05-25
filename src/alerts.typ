@@ -5,7 +5,7 @@
 ///
 /// Example: `alerts.secondary[content]`
 #let secondary(body) = {
-  show: text.with(fill: colors.secondary)
+  show: text.with(fill: colors.secondary, weight: "bold")
   body
 }
 
@@ -13,7 +13,7 @@
 ///
 /// Example: `alerts.tertiary[content]`
 #let tertiary(body) = {
-  show: text.with(fill: colors.tertiary)
+  show: text.with(fill: colors.tertiary, weight: "bold")
   body
 }
 
@@ -21,6 +21,14 @@
 ///
 /// Example: `alerts.quarternary[content]`
 #let quarternary(body) = {
-  show: text.with(fill: colors.quarternary)
+  show: text.with(fill: colors.quarternary, weight: "bold")
+  body
+}
+
+/// Alert content with the dark color (Black).
+///
+/// Example: `alerts.dark[content]`
+#let dark(body) = {
+  show: text.with(fill: colors.dark, weight: "bold")
   body
 }

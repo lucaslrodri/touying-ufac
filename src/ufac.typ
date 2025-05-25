@@ -354,11 +354,8 @@
         )
         body
       },
-      primary: (self: none, body) => text(fill: self.colors.primary, body),
-      secondary: (self: none, body) => text(fill: self.colors.secondary, body),
-      tertiary: (self: none, body) => text(fill: self.colors.tertiary, body),
-      alert: (self: none, it) => text(fill: self.colors.primary, it),
-      alert-secondary: (body) => utils.alert-with-primary-color(),
+      alert: (self: none, it) => text(fill: self.colors.primary, it, weight: "bold"),
+      cover: utils.semi-transparent-cover.with(alpha: 85%)
     ),
     config-colors(
       primary: colors.primary,

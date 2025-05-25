@@ -90,7 +90,7 @@
     // sticky: true,
     radius: 5pt,
     width: 100%,
-    if icon != "" or title != "" {
+    if icon != "" {
     box(
       baseline: 3pt,
       grid(
@@ -103,6 +103,10 @@
         )
       }
     ))
+    } else if title != "" {
+      text(fill: color, weight: "semibold",
+        [#title]
+      )
     } + body
   )
 }
