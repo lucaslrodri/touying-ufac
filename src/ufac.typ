@@ -302,7 +302,7 @@
         )
 
         show terms.item: it => {
-          text(weight: "bold", fill: self.colors.secondary, it.term + ": ")
+          text(weight: "bold", fill: self.colors.neutral-darkest, it.term + ": ")
           it.description
           linebreak()
         }
