@@ -120,9 +120,9 @@
 /// 
 /// -> content
 /// 
-#let quote-box(body, color: colors.secondary) = block(
+#let quote-box(body, color: colors.secondary, inset: (left: 1em, y: .75em)) = block(
   stroke: (left:.25em + color),
-  inset: (left:1em, y: .75em),
+  inset: inset,
   body
 )
 

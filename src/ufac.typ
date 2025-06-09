@@ -288,9 +288,11 @@
 
         show quote: it => {
           // set text(fill: self.colors.primary, weight: "bold")
-          quote-box(["#it.body"
-          #set std.align(right)
-          #it.attribution])
+          quote-box(["#it.body"\ #{
+          set std.align(right)
+          it.attribution
+          }
+          ])
         }
 
         set terms(
