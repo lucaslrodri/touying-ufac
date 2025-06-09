@@ -322,14 +322,14 @@
 )
 
 // Wrap path data into SVG
-#let _octique-svg(name) = {
+#let _icon-svg(name) = {
   "<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 16 16\" role=\"graphics-symbol\" aria-hidden=\"true\" focusable=\"false\" width=\"16\" height=\"16\" fill=\"#000000\">" + _data.at(name) + "</svg>"
 }
 
 // Returns decoded image for name
-#let _octique-image(name, color: rgb("#000000"), width: 1em, height: 1em) = {
+#let _icon-image(name, color: rgb("#000000"), width: 1em, height: 1em) = {
   image(
-    bytes(_octique-svg(name).replace("#000000", color.to-hex())),
+    bytes(_icon-svg(name).replace("#000000", color.to-hex())),
     width: width,
     height: height,
     alt: name,
@@ -339,12 +339,10 @@
 
 
 // Returns an image for the given name.
-#let octique(name, color: rgb("#000000"), width: 1em, height: 1em) = _octique-image(name, color: color, width: width, height: width)
+#let icon(name, color: rgb("#000000"), width: 1em, height: 1em) = _icon-image(name, color: color, width: width, height: width)
 
 // Returns a boxed image for the given name.
-#let octique-inline(name, color: rgb("#000000"), width: 1em, height: 1em, baseline: 25%) = {
-  box(baseline: baseline, octique(name, color: color, width: width, height: height))
+#let icon-inline(name, color: rgb("#000000"), width: 1em, height: 1em, baseline: 25%) = {
+  box(baseline: baseline, icon(name, color: color, width: width, height: height))
 }
 
-// Returns an SVG text for the given name.
-#let octique-svg(name) = _octique-svg(name)

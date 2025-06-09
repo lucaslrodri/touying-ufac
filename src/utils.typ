@@ -93,7 +93,7 @@
 // Public methods
 // TODO: Description
 #let numbered-list(..items) = {
-  set enum(
+  enum(
     numbering: (..nums) => {
       let depth = nums.pos().len()
       if depth == 1 {
@@ -107,19 +107,31 @@
         numbering("i.", nums.at(-1))
       }
     },
-    full: true
+    full: true,
+    ..items.pos().enumerate().map(
+      (item) => {
+        let (index, value) = item
+        enum.item(index + 1)[#value]
+      }
+    )
   )
-  enum(
-  ..items.pos().enumerate().map(
-    (item) => {
-      let (index, value) = item
-      enum.item(index + 1)[#value]
+}
+
+#let bullet-list(body, color: colors.secondary) = {
+  set list(marker: (depth) => {
+    if depth == 0 {
+      move(square(fill: color, size: 0.4em, radius: 0.1em), dy: 0.2em)
+    } else if depth == 1 {
+      move(rotate(square(stroke: color + 2pt, size: 0.3em, radius: 0.1em), -20deg), dy: 0.4em)
+    } else {
+      text("-", fill: color)
     }
-  ))
+  })
+  body
 }
 
 //Replacing composer side-by-side (Adding division between columns)
-#let side-by-side(columns: auto, gutter: 0em, ..bodies) = {
+#let side-by-side(columns: auto, height: 100%, gutter: 0em, ..bodies) = {
   let bodies = bodies.pos()
   if bodies.len() == 1 {
     return bodies.first()
@@ -131,7 +143,7 @@
   }
   grid(
    columns: columns,
-   rows: 100%,
+   rows: height,
    inset: (x, _) => (
     left: if (x > 0) {1em} else {0em},
     right: 1em,

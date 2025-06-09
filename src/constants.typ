@@ -3,8 +3,8 @@
 #let colors = (
   primary: rgb("#0C4DA2"),
   secondary: rgb("#FFBF14"),
-  tertiary: rgb("#be1e2d"), // rgb("#FF0015")
-  quarternary: rgb("#09B081"),
+  danger: rgb("#be1e2d"), // rgb("#FF0015")
+  safe: rgb("#09B081"),
   light: rgb("#ffffff"),
   dark: rgb("#000000"),
 )

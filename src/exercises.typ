@@ -32,7 +32,7 @@
 }
 
 // TODO: Make description
-#let solution(title: "", color: colors.quarternary, body) = {
+#let solution(title: "", color: colors.safe, body) = {
   let full-title = "Solução" + if title != "" [ (#title)]
   _render-exercise(full-title, color, body)
 }

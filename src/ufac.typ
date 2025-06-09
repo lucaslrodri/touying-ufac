@@ -1,6 +1,7 @@
 #import "@preview/touying:0.6.1": *
 #import "utils.typ" as _internals
 #import "constants.typ": colors
+#import "alerts.typ": inline-box, quote-box
 
 
 /// Default slide function for the presentation.
@@ -145,6 +146,7 @@
   let slide-body = {
     set std.align(left + horizon)
     show: pad.with(left: 2%, top: -4em)
+    set image(width: 12em, height: 66%)
     grid(columns: (1fr, auto),{
       set text(size: 2em, fill: self.colors.primary, weight: "bold")
       let _title = context{
@@ -199,19 +201,6 @@
 
   touying-slide(self: self, repeat: repeat, setting: setting, composer: composer, ..bodies)
 })
-
-// TODO: Description
-#let side-by-side-slide(config: (:), columns: none, ..bodies) = touying-slide-wrapper(self => {
-  self = utils.merge-dicts(
-    self,
-    config-page(
-      header: _header,
-      footer: _footer,
-    ),
-  )
-  touying-slide(self: self, config: config, composer: _internals.side-by-side.with(columns: columns), ..bodies)
-})
-
 
 /// Ufac theme.
 ///
@@ -291,11 +280,18 @@
             set text(fill: self.colors.primary)
             scale(x:100%, sym.arrow.r)
           } else if depth == 1 {
-            move(square(fill: self.colors.secondary, size: 0.4em, radius: 0.1em), dy: 0.1em)
+            move(square(fill: self.colors.secondary, size: 0.4em, radius: 0.1em), dy: 0.2em)
           } else {
-            move(rotate(square(stroke: self.colors.secondary + 2pt, size: 0.3em, radius: 0.1em), -20deg), dy: 0.2em)
+            move(rotate(square(stroke: self.colors.secondary + 2pt, size: 0.3em, radius: 0.1em), -20deg), dy: 0.4em)
           }
         })
+
+        show quote: it => {
+          // set text(fill: self.colors.primary, weight: "bold")
+          quote-box(["#it.body"
+          #set std.align(right)
+          #it.attribution])
+        }
 
         set terms(
           tight: false,
@@ -311,6 +307,10 @@
           fill: self.colors.neutral-lightest,
           weight: "bold",
         )
+
+        show figure.caption: it => [
+          #it.body
+        ]
 
         set table(
           fill: (_, y) => {
@@ -338,10 +338,15 @@
         }
 
         show heading.where(level: 3): it => {
+          block(below: 1em,
+          inline-box(it.body, color: self.colors.primary)
+          )
+        }
+        show heading.where(level: 4): it => {
           set text(fill: self.colors.secondary, weight: "bold")
           block(below: 1em, text(it.body))
         }
-        show heading.where(level: 4): it => {
+        show heading.where(level: 5): it => {
           set text(fill: self.colors.neutral-darkest, weight: "bold")
           block(text(it.body))
         }
@@ -360,7 +365,7 @@
     config-colors(
       primary: colors.primary,
       secondary: colors.secondary,
-      tertiary: colors.tertiary,
+      tertiary: colors.danger,
       neutral-lightest: colors.light,
       neutral-darkest: colors.dark,
     ),
