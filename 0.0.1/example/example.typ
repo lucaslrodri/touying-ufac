@@ -210,3 +210,15 @@ O curso é dividido em 4 módulos, cada um com 3 aulas.
   
   ]
 ]
+
+#exercise-slide(source: [Ogata])[
+  #lorem(300)
+]
+
+#exercise-slide(type: "exercise", source: [Omar])[
+  #lorem(300)
+]
+
+#exercise-slide(type: "solution-example")[
+  Omar é um gato que gosta de brincar com o computador do professor. Ele sempre tenta abrir o editor de texto e escrever mensagens engraçadas. O que você acha que ele escreveria se pudesse?
+]

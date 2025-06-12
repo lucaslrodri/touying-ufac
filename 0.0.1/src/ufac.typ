@@ -2,7 +2,7 @@
 #import "utils.typ" as _internals
 #import "constants.typ": colors
 #import "alerts.typ": inline-box, quote-box
-
+#import "exercises.typ": _exercise-counter, _example-counter
 
 /// Default slide function for the presentation.
 ///
@@ -182,6 +182,29 @@
   touying-slide(self: self, config: config, slide-body)
 })
 
+/// Empty Slide (Without title) for the presentation.
+///
+/// - config (dictionary): The configuration of the slide. You can use `config-xxx` to set the configuration of the slide. For more several configurations, you can use `utils.merge-dicts` to merge them.
+///
+/// - repeat (int, auto): The number of subslides. Default is `auto`, which means touying will automatically calculate the number of subslides.
+///
+////   The `repeat` argument is necessary when you use `#slide(repeat: 3, self => [ .. ])` style code to create a slide. The callback-style `uncover` and `only` cannot be detected by touying automatically.
+///
+/// - setting (function): The setting of the slide. You can use it to add some set/show rules for the slide.
+///
+/// - composer (function): The composer of the slide. You can use it to set the layout of the slide.
+///
+///   For example, `#empty-slide(composer: (1fr, 2fr, 1fr))[A][B][C]` to split the slide into three parts. The first and the last parts will take 1/4 of the slide, and the second part will take 1/2 of the slide.
+///
+///   If you pass a non-function value like `(1fr, 2fr, 1fr)`, it will be assumed to be the first argument of the `components.side-by-side` function.
+///
+///   The `components.side-by-side` function is a simple wrapper of the `grid` function. It means you can use the `grid.cell(colspan: 2, ..)` to make the cell take 2 columns.
+///
+///   For example, `#empty-slide(composer: 2)[A][B][#grid.cell(colspan: 2)[Footer]]` will make the `Footer` cell take 2 columns.
+///
+///   If you want to customize the composer, you can pass a function to the `composer` argument. The function should receive the contents of the slide and return the content of the slide, like `#slide(composer: grid.with(columns: 2))[A][B]`.
+///
+/// - bodies (array): The contents of the slide. You can call the `blank-slide` function with syntax like `#blank-slide[A][B][C]` to create an empty slide.
 #let blank-slide(
   config: (:),
   repeat: auto,
@@ -196,6 +219,73 @@
     config-page(
       margin: (top: 1.25em, x: 1.25em, ..args),
       footer: _internals._footer,
+    )
+  )
+
+  touying-slide(self: self, repeat: repeat, setting: setting, composer: composer, ..bodies)
+})
+
+#let exercise-slide(
+  config: (:),
+  type: "example",
+  source: [],
+  repeat: auto,
+  setting: body => body,
+  composer: auto,
+  ..bodies,
+) = touying-slide-wrapper(self => {
+
+  if type == "example" {
+    _example-counter.step()
+  } else if type == "exercise" {
+    _exercise-counter.step()
+  }
+  context(
+    if type == "example" {
+      let counter-label = "example" + _example-counter.display()
+    } else if type == "exercise" {
+      let counter-label = "exercise" + _exercise-counter.display()
+    }
+  )
+  let color = if (type == "example" or type == "solution-example" ) { colors.safe } else if (type == "exercise" or type == "solution-exercise") { colors.danger } else { colors.safe }
+
+  let src = if source != [] { " (" + source + ")" } else { "" }
+
+  let _header(self) = {
+    set std.align(horizon)
+    // set text(self.colors.primary, size: 1.2em, weight: "bold")
+
+    context(block(
+      inset: (x: 1em),
+      width: 100%,
+      height: 1.5em,
+      // fill: self.colors.tertiary,
+      utils.call-or-display(self, inline-box({
+        if type == "example" {
+          [Exemplo #self.info.counter-prefix#_example-counter.display()#src]
+        } else if type == "exercise" {
+          [Tarefa #self.info.counter-prefix#_exercise-counter.display()#src]
+        } else if type == "solution" {
+          [Solução]
+        } else if type == "solution-example" {
+          [Solução (Exemplo #self.info.counter-prefix#_example-counter.display())]
+        } else if type == "solution-exercise" {
+          [Solução (Exercício #self.info.counter-prefix#_exercise-counter.display())]
+        }
+      },
+        color: color,
+        text-color: self.colors.neutral-lightest,
+      )),
+    ))
+  }
+
+  let args = (:)
+  let self = utils.merge-dicts(
+    self,
+    config-page(
+      // margin: (top: 1.25em, x: 1.25em, ..args),
+      footer: _internals._footer,
+      header: _header,
     )
   )
 
@@ -383,6 +473,7 @@
       subtitle: [],
       subject: [],
       subject-code: [],
+      counter-prefix: [1.],
       course: "Curso de Engenharia Elétrica",
       institution: "Universidade Federal do Acre",
       logo: image(bytes(_internals._ufac-logo)),

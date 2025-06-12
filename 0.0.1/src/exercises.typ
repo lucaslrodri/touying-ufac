@@ -1,5 +1,13 @@
 #import "@preview/theorion:0.3.3": *
 #import "constants.typ": colors
+#import "alerts.typ": inline-box
+
+#let _example-counter = counter("example")
+#let _exercise-counter = counter("exercise")
+
+#_example-counter.update(it => 1)
+#_exercise-counter.update(it => 1)
+
 
 // TODO: Make description
 #let _title-box(body, color: colors.secondary, text-color: white) = block(
