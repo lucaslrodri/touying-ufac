@@ -227,7 +227,8 @@
 
 #let exercise-slide(
   config: (:),
-  type: "example",
+  type: "exercise",
+  solution: false,
   source: [],
   repeat: auto,
   setting: body => body,
@@ -240,6 +241,8 @@
   } else if type == "exercise" {
     _exercise-counter.step()
   }
+  let color = if (type == "example") { colors.safe } else if (type == "exercise") { colors.danger }
+
   context(
     if type == "example" {
       let counter-label = "example" + _example-counter.display()
@@ -247,7 +250,6 @@
       let counter-label = "exercise" + _exercise-counter.display()
     }
   )
-  let color = if (type == "example" or type == "solution-example" ) { colors.safe } else if (type == "exercise" or type == "solution-exercise") { colors.danger } else { colors.safe }
 
   let src = if source != [] { " (" + source + ")" } else { "" }
 
@@ -261,20 +263,21 @@
       height: 1.5em,
       // fill: self.colors.tertiary,
       utils.call-or-display(self, inline-box({
-        if type == "example" {
-          [Exemplo #self.info.counter-prefix#_example-counter.display()#src]
-        } else if type == "exercise" {
-          [Tarefa #self.info.counter-prefix#_exercise-counter.display()#src]
-        } else if type == "solution" {
-          [Solução]
-        } else if type == "solution-example" {
-          [Solução (Exemplo #self.info.counter-prefix#_example-counter.display())]
-        } else if type == "solution-exercise" {
-          [Solução (Exercício #self.info.counter-prefix#_exercise-counter.display())]
+        if (solution == false){
+          if type == "example" {
+            [Exemplo #self.info.counter-prefix#_example-counter.display()#src]
+          } else if type == "exercise" {
+            [Tarefa #self.info.counter-prefix#_exercise-counter.display()#src]
+          }
+        }else{
+          if type == "example" {
+            [Solução (Exemplo #self.info.counter-prefix#_example-counter.display())]
+          } else if type == "exercise" {
+            [Solução da Tarefa #self.info.counter-prefix#_exercise-counter.display()]
+            [Solução (Exercício #self.info.counter-prefix#_exercise-counter.display())]
+          }
         }
-      },
-        color: color,
-        text-color: self.colors.neutral-lightest,
+      }, color: color, text-color: self.colors.neutral-lightest,
       )),
     ))
   }
@@ -291,6 +294,25 @@
 
   touying-slide(self: self, repeat: repeat, setting: setting, composer: composer, ..bodies)
 })
+
+#let example-slide(
+  config: (:),
+  solution: false,
+  source: [],
+  repeat: auto,
+  setting: body => body,
+  composer: auto,
+  ..bodies,
+) = exercise-slide(
+  config: config,
+  type: "example",
+  solution: solution,
+  source: source,
+  repeat: repeat,
+  setting: setting,
+  composer: composer,
+  ..bodies,
+)
 
 /// Ufac theme.
 ///
