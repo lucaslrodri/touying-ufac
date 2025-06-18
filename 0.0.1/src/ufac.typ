@@ -236,9 +236,9 @@
   ..bodies,
 ) = touying-slide-wrapper(self => {
 
-  if type == "example" {
+  if type == "example" and solution == false {
     _example-counter.step()
-  } else if type == "exercise" {
+  } else if type == "exercise" and solution == false {
     _exercise-counter.step()
   }
   let color = if (type == "example") { colors.safe } else if (type == "exercise") { colors.danger }
@@ -273,8 +273,7 @@
           if type == "example" {
             [Solução (Exemplo #self.info.counter-prefix#_example-counter.display())]
           } else if type == "exercise" {
-            [Solução da Tarefa #self.info.counter-prefix#_exercise-counter.display()]
-            [Solução (Exercício #self.info.counter-prefix#_exercise-counter.display())]
+            [Solução (Tarefa #self.info.counter-prefix#_exercise-counter.display())]
           }
         }
       }, color: color, text-color: self.colors.neutral-lightest,
