@@ -2,7 +2,7 @@
 #import "utils.typ" as _internals
 #import "constants.typ": colors
 #import "alerts.typ": inline-box, quote-box
-#import "exercises.typ": _exercise-counter, _example-counter
+#import "exercises.typ": _example-counter, _exercise-counter
 
 /// Default slide function for the presentation.
 ///
@@ -34,15 +34,10 @@
   composer: auto,
   ..bodies,
 ) = touying-slide-wrapper(self => {
-
-
-  let self = utils.merge-dicts(
-    self,
-    config-page(
-      header: _internals._header,
-      footer: _internals._footer,
-    )
-  )
+  let self = utils.merge-dicts(self, config-page(
+    header: _internals._header,
+    footer: _internals._footer,
+  ))
 
   touying-slide(self: self, config: config, repeat: repeat, setting: setting, composer: composer, ..bodies)
 })
@@ -55,7 +50,7 @@
 /// ```typst
 /// #title-slide()
 /// ```
-/// 
+///
 /// - config (dictionary): is the configuration of the slide. Use `config-xxx` to set individual configurations for the slide. To apply multiple configurations, use `utils.merge-dicts` to combine them.
 ///
 /// - extra (string, none): is the extra information for the slide. This can be passed to the `title-slide` function to display additional information on the title slide.
@@ -68,14 +63,17 @@
 
   let footer(self) = {
     set std.align(bottom)
-    move(grid(
-      columns: (1em, auto, 1fr),
-      rows: 1.5em,
-      align: horizon,
-      _internals._line-white(self),
-      box(image(bytes(_internals._ufac-logo.replace("#0c4da2", "#fff")), height: 0.64em), inset: 0.2em),
-      _internals._line-white(self)
-    ), dy: -0.05em)
+    move(
+      grid(
+        columns: (1em, auto, 1fr),
+        rows: 1.5em,
+        align: horizon,
+        _internals._line-white(self),
+        box(image(bytes(_internals._ufac-logo.replace("#0c4da2", "#fff")), height: 0.64em), inset: 0.2em),
+        _internals._line-white(self),
+      ),
+      dy: -0.05em,
+    )
   }
 
   let header(self) = {
@@ -90,8 +88,14 @@
       columns: (auto, auto),
       rows: 1.5em,
       align: horizon,
-      _internals._cell(self, pad-left: 1em, pos: "left", white: true, utils.call-or-display(self, self.store.footer-left)),
-      _internals._cell(self, pad-right: 1em, pos: "right", white: true, utils.call-or-display(self, self.store.footer-right)),
+      _internals._cell(self, pad-left: 1em, pos: "left", white: true, utils.call-or-display(
+        self,
+        self.store.footer-left,
+      )),
+      _internals._cell(self, pad-right: 1em, pos: "right", white: true, utils.call-or-display(
+        self,
+        self.store.footer-right,
+      )),
     )
   }
 
@@ -106,25 +110,20 @@
 
   let body = {
     std.align(center + horizon, {
-      block(
-        inset: 0em, breakable: false, {
-          text(size: 2em, fill: self.colors.neutral-lightest, weight: "bold",
-            utils.call-or-display(self, self.info.subject)
-          )
-          if self.info.subtitle != none {
-            parbreak()
-            text(size: 1.2em, fill: self.colors.secondary,
-              utils.call-or-display(self, self.info.subtitle)
-            )
-            linebreak()
-          }
-          if self.info.title != none {            
-            text(size: 1.2em, fill: self.colors.neutral-lightest,
-              utils.call-or-display(self, self.info.title)
-            )
-          }
+      block(inset: 0em, breakable: false, {
+        text(size: 2em, fill: self.colors.neutral-lightest, weight: "bold", utils.call-or-display(
+          self,
+          self.info.subject,
+        ))
+        if self.info.subtitle != none {
+          parbreak()
+          text(size: 1.2em, fill: self.colors.secondary, utils.call-or-display(self, self.info.subtitle))
+          linebreak()
         }
-      )
+        if self.info.title != none {
+          text(size: 1.2em, fill: self.colors.neutral-lightest, utils.call-or-display(self, self.info.title))
+        }
+      })
     })
   }
 
@@ -136,7 +135,7 @@
 /// Example: `config-common(new-section-slide-fn: new-section-slide.with(numbered: false))`
 ///
 /// - config (dictionary): is the configuration of the slide. Use `config-xxx` to set individual configurations for the slide. To apply multiple configurations, use `utils.merge-dicts` to combine them.
-/// 
+///
 /// - level (int, none): is the level of the heading.
 ///
 /// - numbered (boolean): is whether the heading is numbered.
@@ -147,37 +146,32 @@
     set std.align(left + horizon)
     show: pad.with(left: 2%, top: -4em)
     set image(width: 12em, height: 66%)
-    grid(columns: (1fr, auto),{
-      set text(size: 2em, fill: self.colors.primary, weight: "bold")
-      let _title = context{
-        let current-page = here().page()
-        let heading-num = query(heading).filter(h => h.location().page() <= current-page and h.level == 1).len()
-      [Parte #heading-num: \
-        #utils.display-current-heading(level: level, numbered: numbered)
-      ] 
-      }
+    grid(
+      columns: (1fr, auto),
+      {
+        set text(size: 2em, fill: self.colors.primary, weight: "bold")
+        let _title = context {
+          let current-page = here().page()
+          let heading-num = query(heading).filter(h => h.location().page() <= current-page and h.level == 1).len()
+          [#config.part-name #heading-num: \
+            #utils.display-current-heading(level: level, numbered: numbered)
+          ]
+        }
 
-      if self.store.progress-bar {        
-      stack(
-      dir: ttb,
-      spacing: .65em,
-      _title,
-        block(
-          height: 2pt,
-          width: 100%,
-          spacing: 0pt,
-          components.progress-bar(height: 4pt, self.colors.secondary, self.colors.secondary.lighten(70%)),
-        )
-      )
-      }else{ _title }
-    }, move(pad(top: 1.5em, body), dx: 2em))
-  }
-  let self = utils.merge-dicts(
-    self,
-    config-page(
-      footer: _internals._footer,
+        if self.store.progress-bar {
+          stack(dir: ttb, spacing: .65em, _title, block(height: 2pt, width: 100%, spacing: 0pt, components.progress-bar(
+            height: 4pt,
+            self.colors.secondary,
+            self.colors.secondary.lighten(70%),
+          )))
+        } else { _title }
+      },
+      move(pad(top: 1.5em, body), dx: 2em),
     )
-  )
+  }
+  let self = utils.merge-dicts(self, config-page(
+    footer: _internals._footer,
+  ))
 
   touying-slide(self: self, config: config, slide-body)
 })
@@ -212,15 +206,11 @@
   composer: auto,
   ..bodies,
 ) = touying-slide-wrapper(self => {
-
   let args = (:)
-  let self = utils.merge-dicts(
-    self,
-    config-page(
-      margin: (top: 1.25em, x: 1.25em, ..args),
-      footer: _internals._footer,
-    )
-  )
+  let self = utils.merge-dicts(self, config-page(
+    margin: (top: 1.25em, x: 1.25em, ..args),
+    footer: _internals._footer,
+  ))
 
   touying-slide(self: self, repeat: repeat, setting: setting, composer: composer, ..bodies)
 })
@@ -235,7 +225,6 @@
   composer: auto,
   ..bodies,
 ) = touying-slide-wrapper(self => {
-
   if type == "example" and solution == false {
     _example-counter.step()
   } else if type == "exercise" and solution == false {
@@ -243,7 +232,7 @@
   }
   let color = if (type == "example") { colors.safe } else if (type == "exercise") { colors.danger }
 
-  context(
+  context (
     if type == "example" {
       let counter-label = "example" + _example-counter.display()
     } else if type == "exercise" {
@@ -257,39 +246,41 @@
     set std.align(horizon)
     // set text(self.colors.primary, size: 1.2em, weight: "bold")
 
-    context(block(
-      inset: (x: 1em),
-      width: 100%,
-      height: 1.5em,
-      // fill: self.colors.tertiary,
-      utils.call-or-display(self, inline-box({
-        if (solution == false){
-          if type == "example" {
-            [Exemplo #self.info.counter-prefix#_example-counter.display()#src]
-          } else if type == "exercise" {
-            [Tarefa #self.info.counter-prefix#_exercise-counter.display()#src]
-          }
-        }else{
-          if type == "example" {
-            [Solução (Exemplo #self.info.counter-prefix#_example-counter.display())]
-          } else if type == "exercise" {
-            [Solução (Tarefa #self.info.counter-prefix#_exercise-counter.display())]
-          }
-        }
-      }, color: color, text-color: self.colors.neutral-lightest,
-      )),
-    ))
+    context (
+      block(
+        inset: (x: 1em),
+        width: 100%,
+        height: 1.5em,
+        // fill: self.colors.tertiary,
+        utils.call-or-display(self, inline-box(
+          {
+            if (solution == false) {
+              if type == "example" {
+                [Exemplo #self.info.counter-prefix#_example-counter.display()#src]
+              } else if type == "exercise" {
+                [Tarefa #self.info.counter-prefix#_exercise-counter.display()#src]
+              }
+            } else {
+              if type == "example" {
+                [Solução (Exemplo #self.info.counter-prefix#_example-counter.display())]
+              } else if type == "exercise" {
+                [Solução (Tarefa #self.info.counter-prefix#_exercise-counter.display())]
+              }
+            }
+          },
+          color: color,
+          text-color: self.colors.neutral-lightest,
+        )),
+      )
+    )
   }
 
   let args = (:)
-  let self = utils.merge-dicts(
-    self,
-    config-page(
-      // margin: (top: 1.25em, x: 1.25em, ..args),
-      footer: _internals._footer,
-      header: _header,
-    )
-  )
+  let self = utils.merge-dicts(self, config-page(
+    // margin: (top: 1.25em, x: 1.25em, ..args),
+    footer: _internals._footer,
+    header: _header,
+  ))
 
   touying-slide(self: self, repeat: repeat, setting: setting, composer: composer, ..bodies)
 })
@@ -342,7 +333,6 @@
     let code = ""
     if self.info.subject-code != [] and self.info.subject-code != none and self.info.subject-code != "" {
       code = self.info.subject-code + " - "
-
     }
     code + self.info.subject
   },
@@ -353,12 +343,11 @@
   set text(size: 20pt)
 
   show: touying-slides.with(
-    config-page(
-      paper: "presentation-" + aspect-ratio,
-      header-ascent: 0em,
-      footer-descent: 0em,
-      margin: (top: 3.25em, bottom: 1.75em, x: 1.8em)
-    ),
+    config-page(paper: "presentation-" + aspect-ratio, header-ascent: 0em, footer-descent: 0em, margin: (
+      top: 3.25em,
+      bottom: 1.75em,
+      x: 1.8em,
+    )),
     config-common(
       slide-fn: slide,
       new-section-slide-fn: new-section-slide,
@@ -369,27 +358,30 @@
           font: ("New Computer Modern Sans", "Carlito", "Calibri", "Libertinus Sans"),
           size: 22pt,
           weight: 500,
-          lang: "pt"
+          lang: "pt",
         )
 
-        set enum(numbering: (..nums) => {
-          let depth = nums.pos().len()
-          if depth == 1 {
-            set text(fill: self.colors.primary)
-            numbering("a)", ..nums)
-          }else if depth == 2 {
-            set text(fill: self.colors.secondary.darken(5%))
-            numbering("i.", nums.at(-1))
-          }else {
-            set text(fill: self.colors.secondary.darken(5%))
-            numbering("1.", nums.at(-1))
-          }
-        }, full: true)
+        set enum(
+          numbering: (..nums) => {
+            let depth = nums.pos().len()
+            if depth == 1 {
+              set text(fill: self.colors.primary)
+              numbering("a)", ..nums)
+            } else if depth == 2 {
+              set text(fill: self.colors.secondary.darken(5%))
+              numbering("i.", nums.at(-1))
+            } else {
+              set text(fill: self.colors.secondary.darken(5%))
+              numbering("1.", nums.at(-1))
+            }
+          },
+          full: true,
+        )
 
-        set list(marker: (depth) => {
+        set list(marker: depth => {
           if depth == 0 {
             set text(fill: self.colors.primary)
-            scale(x:100%, sym.arrow.r)
+            scale(x: 100%, sym.arrow.r)
           } else if depth == 1 {
             move(square(fill: self.colors.secondary, size: 0.4em, radius: 0.1em), dy: 0.2em)
           } else {
@@ -400,9 +392,9 @@
         show quote: it => {
           // set text(fill: self.colors.primary, weight: "bold")
           quote-box(["#it.body"\ #{
-          set std.align(right)
-          it.attribution
-          }
+              set std.align(right)
+              it.attribution
+            }
           ])
         }
 
@@ -433,14 +425,14 @@
           },
           stroke: (x, y) => (
             y: self.colors.primary,
-            x: if x>0 and y==0 {
+            x: if x > 0 and y == 0 {
               self.colors.neutral-lightest
-            }else {
+            } else {
               self.colors.primary
             },
             right: self.colors.primary,
           ),
-          inset: 0.5em
+          inset: 0.5em,
         )
 
 
@@ -451,9 +443,7 @@
         }
 
         show heading.where(level: 3): it => {
-          block(below: 1em,
-          inline-box(it.body, color: self.colors.primary)
-          )
+          block(below: 1em, inline-box(it.body, color: self.colors.primary))
         }
         show heading.where(level: 4): it => {
           set text(fill: self.colors.secondary, weight: "bold")
@@ -473,7 +463,7 @@
         body
       },
       alert: (self: none, it) => text(fill: self.colors.primary, it, weight: "bold"),
-      cover: utils.semi-transparent-cover.with(alpha: 85%)
+      cover: utils.semi-transparent-cover.with(alpha: 85%),
     ),
     config-colors(
       primary: colors.primary,
@@ -495,6 +485,7 @@
       subject: [],
       subject-code: [],
       counter-prefix: [1.],
+      part-name: [Capítulo],
       course: "Curso de Engenharia Elétrica",
       institution: "Universidade Federal do Acre",
       logo: image(bytes(_internals._ufac-logo)),
