@@ -153,7 +153,7 @@
         let _title = context {
           let current-page = here().page()
           let heading-num = query(heading).filter(h => h.location().page() <= current-page and h.level == 1).len()
-          [#config.part-name #heading-num: \
+          [#self.info.part-name #heading-num: \
             #utils.display-current-heading(level: level, numbered: numbered)
           ]
         }
