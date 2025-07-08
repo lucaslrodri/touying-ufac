@@ -485,7 +485,7 @@
       subject: [],
       subject-code: [],
       counter-prefix: [1.],
-      part-name: [Capítulo],
+      part-name: [Parte],
       course: "Curso de Engenharia Elétrica",
       institution: "Universidade Federal do Acre",
       logo: image(bytes(_internals._ufac-logo)),
